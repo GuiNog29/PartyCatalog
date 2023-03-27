@@ -16,8 +16,8 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecorators() {
-        
+        public ActionResult<IEnumerable<Decorator>> GetDecorators() 
+        {
             var decorators = _context.Decorators.ToList();
 
             if(decorators is null)
