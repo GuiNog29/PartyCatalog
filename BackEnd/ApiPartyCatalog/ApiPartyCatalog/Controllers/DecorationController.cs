@@ -16,12 +16,12 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Decoration>> GetDecorations()
+        public ActionResult<IEnumerable<Decoration>> GetDecorationFromDecorator(int idDecorator)
         {
-            var decorations = _context.Decorations.ToList();
+            var decorations = _context.Decorations.Where(x => x.DecoratorId == idDecorator).ToList();
 
-            if(decorations is null)
-                return NotFound("Não foi encontrado nenhuma decoração");
+            if (decorations is null)
+                return NotFound("Não foi encontrado nenhuma decoração deste decorador...");
 
             return decorations;
         }
