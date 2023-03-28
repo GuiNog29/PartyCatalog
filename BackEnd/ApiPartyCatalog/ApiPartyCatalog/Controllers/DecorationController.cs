@@ -1,5 +1,4 @@
-﻿using ApiPartyCatalog.Business;
-using ApiPartyCatalog.Context;
+﻿using ApiPartyCatalog.Context;
 using ApiPartyCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,17 +8,22 @@ namespace ApiPartyCatalog.Controllers
     [ApiController]
     public class DecorationController : Controller
     {
-        private readonly DecorationBusiness _decorationBusiness;
+        private readonly ApiPartyCatalogContext _context;
 
-        public DecorationController(DecorationBusiness decorationBusiness)
+        public DecorationController(ApiPartyCatalogContext context)
         {
-            _decorationBusiness = decorationBusiness;
+            _context = context;
         }
 
         [HttpGet]
-        public IEnumerable<Decoration> GetAllDecorationFromDecorator(int idDecorator)
+        public ActionResult<IEnumerable<Decoration>> GetAllDecorationFromDecorator(int idDecorator)
         {
-            return _decorationBusiness.GetAllDecorationFromDecorator(idDecorator);
+            var decorations = _context.Decorations.Where(x => x.DecoratorId == idDecorator).ToList();
+
+            if (decorations is null)
+                return NotFound("Não foi encontrado nenhuma decoração deste decorador...");
+
+            return decorations;
         }
     }
 }
