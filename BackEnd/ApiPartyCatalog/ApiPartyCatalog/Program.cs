@@ -1,3 +1,5 @@
+using ApiPartyCatalog.Business;
+using ApiPartyCatalog.Business.Interface;
 using ApiPartyCatalog.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<DecorationBusiness>();
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
