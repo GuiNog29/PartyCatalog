@@ -1,6 +1,7 @@
 ﻿using ApiPartyCatalog.Context;
 using ApiPartyCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiPartyCatalog.Controllers
 {
@@ -23,7 +24,7 @@ namespace ApiPartyCatalog.Controllers
             if (decorations.Count == 0 || decorations is null)
                 return NotFound("Não foi encontrado nenhuma decoração deste decorador...");
 
-            return decorations;
+            return Ok(decorations);
         }
 
         [Route("GetDecorationByTitle"), HttpGet]
@@ -35,7 +36,7 @@ namespace ApiPartyCatalog.Controllers
             if (decorations.Count == 0 || decorations is null)
                 return NotFound("Não foi encontrado nenhuma decoração com está descrição...");
 
-            return decorations;
+            return Ok(decorations);
         }
 
         [Route("AddingDecoration"), HttpPost]
@@ -50,6 +51,16 @@ namespace ApiPartyCatalog.Controllers
             return Ok(decoration);
         }
 
+        [Route("ChangingDecoration"), HttpPut]
+        public ActionResult ChangingDecoration(int idDecoration, Decoration decoration)
+        {
+            if (idDecoration != decoration.DecorationId)
+                return BadRequest("O ID da decoração está incorreto");
 
+            _context.Entry(decoration).State = EntityState.Modified;
+            _context.SaveChanges(); 
+
+            return Ok(decoration);
+        }
     }
 }
