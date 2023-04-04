@@ -15,8 +15,7 @@ namespace ApiPartyCatalog.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("GetAllDecorationFromDecorator")]
+        [Route("GetAllDecorationFromDecorator"), HttpGet]
         public ActionResult<IEnumerable<Decoration>> GetAllDecorationFromDecorator(int idDecorator)
         {
             var decorations = _context.Decorations.Where(x => x.DecoratorId == idDecorator).ToList();
@@ -27,11 +26,10 @@ namespace ApiPartyCatalog.Controllers
             return decorations;
         }
 
-        [HttpGet]
-        [Route("GetDecorationByTitle")]
-        public ActionResult<IEnumerable<Decoration>> GetDecorationByTitle(string nameDecoration,int idDecorator)
+        [Route("GetDecorationByTitle"), HttpGet]
+        public ActionResult<IEnumerable<Decoration>> GetDecorationByTitle(string nameDecoration, int idDecorator)
         {
-            var decorations = _context.Decorations.Where(x => 
+            var decorations = _context.Decorations.Where(x =>
                 x.Title.Contains(nameDecoration) && x.DecoratorId == idDecorator).ToList();
 
             if (decorations.Count == 0 || decorations is null)
@@ -39,5 +37,19 @@ namespace ApiPartyCatalog.Controllers
 
             return decorations;
         }
+
+        [Route("AddingDecoration"), HttpPost]
+        public ActionResult AddingDecoration(Decoration decoration)
+        {
+            if (decoration is null)
+                return BadRequest("Decoração está nula!");
+
+            _context.Decorations.Add(decoration);
+            _context.SaveChanges();
+
+            return Ok(decoration);
+        }
+
+
     }
 }
