@@ -17,11 +17,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetDecorators"), HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecorators() 
+        public ActionResult<IEnumerable<Decorator>> GetDecorators()
         {
             var decorators = _context.Decorators.ToList();
 
-            if(decorators.Count == 0 || decorators is null)
+            if (decorators.Count == 0 || decorators is null)
                 return NotFound("Não foi encontrado nenhum decorador");
 
             return Ok(decorators);
@@ -33,7 +33,7 @@ namespace ApiPartyCatalog.Controllers
             var decorator = _context.Decorators.Where(x => x.NameDecorator.Contains(name)).ToList();
 
             if (decorator.Count == 0 || decorator == null)
-                return NotFound("Não foi encontrado um decorador com o nome informado");
+                return NotFound("Não foi encontrado um decorador com o nome informado!");
 
             return Ok(decorator);
         }
@@ -41,7 +41,7 @@ namespace ApiPartyCatalog.Controllers
         [Route("AddingDecorator"), HttpPost]
         public ActionResult AddingDecorator(Decorator decorator)
         {
-            if(decorator is null)
+            if (decorator is null)
                 return BadRequest("Decorador está nulo!");
 
             _context.Decorators.Add(decorator);
@@ -51,10 +51,10 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("EditDecorator"), HttpPut]
-        public ActionResult EditDecorator(int idDecorator,  Decorator decorator)
+        public ActionResult EditDecorator(int idDecorator, Decorator decorator)
         {
             if (idDecorator != decorator.DecoratorId)
-                return BadRequest("O ID do decorador está incorreto");
+                return BadRequest("O ID do decorador está incorreto!");
 
             _context.Entry(decorator).State = EntityState.Modified;
             _context.SaveChanges();
@@ -62,5 +62,18 @@ namespace ApiPartyCatalog.Controllers
             return Ok(decorator);
         }
 
+        [Route("DeleteDecorator"), HttpDelete]
+        public ActionResult DeleteDecorator(int idDecorator)
+        {
+            var decorator = _context.Decorators.FirstOrDefault(x => x.DecoratorId == idDecorator);
+
+            if (decorator is null)
+                return BadRequest("Decorador não encontrado!");
+
+            _context.Decorators.Remove(decorator);
+            _context.SaveChanges();
+
+            return Ok(decorator);
+        }
     }
 }

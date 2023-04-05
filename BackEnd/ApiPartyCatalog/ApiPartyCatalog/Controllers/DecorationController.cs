@@ -45,7 +45,7 @@ namespace ApiPartyCatalog.Controllers
                 x.Title.Contains(nameDecoration) && x.DecoratorId == idDecorator).ToList();
 
             if (decorations.Count == 0 || decorations is null)
-                return NotFound("Não foi encontrado nenhuma decoração com está descrição...");
+                return NotFound("Não foi encontrado nenhuma decoração com está descrição!");
 
             return Ok(decorations);
         }
@@ -66,7 +66,7 @@ namespace ApiPartyCatalog.Controllers
         public ActionResult EditDecoration(int idDecoration, Decoration decoration)
         {
             if (idDecoration != decoration.DecorationId)
-                return BadRequest("O ID da decoração está incorreto");
+                return BadRequest("O ID da decoração está incorreto!");
 
             _context.Entry(decoration).State = EntityState.Modified;
             _context.SaveChanges();
@@ -80,7 +80,7 @@ namespace ApiPartyCatalog.Controllers
             var decoration = _context.Decorations.FirstOrDefault(x => x.DecorationId == idDecoration);
 
             if (decoration is null)
-                return BadRequest("Decoração não localizada...");
+                return BadRequest("Decoração não localizada!");
 
             _context.Decorations.Remove(decoration);
             _context.SaveChanges();
