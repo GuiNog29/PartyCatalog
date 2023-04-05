@@ -36,5 +36,17 @@ namespace ApiPartyCatalog.Controllers
 
             return Ok(decorator);
         }
+
+        [Route("AddingDecorator"), HttpPost]
+        public ActionResult AddingDecorator(Decorator decorator)
+        {
+            if(decorator is null)
+                return BadRequest("Decorador está nulo!");
+
+            _context.Decorators.Add(decorator);
+            _context.SaveChanges();
+
+            return Ok(decorator);
+        }
     }
 }
