@@ -62,14 +62,14 @@ namespace ApiPartyCatalog.Controllers
             return Ok(decoration);
         }
 
-        [Route("ChangingDecoration"), HttpPut]
-        public ActionResult ChangingDecoration(int idDecoration, Decoration decoration)
+        [Route("EditDecoration"), HttpPut]
+        public ActionResult EditDecoration(int idDecoration, Decoration decoration)
         {
             if (idDecoration != decoration.DecorationId)
                 return BadRequest("O ID da decoração está incorreto");
 
             _context.Entry(decoration).State = EntityState.Modified;
-            _context.SaveChanges(); 
+            _context.SaveChanges();
 
             return Ok(decoration);
         }

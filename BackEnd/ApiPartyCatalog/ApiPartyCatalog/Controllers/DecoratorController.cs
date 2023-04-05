@@ -1,6 +1,7 @@
 ﻿using ApiPartyCatalog.Context;
 using ApiPartyCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiPartyCatalog.Controllers
 {
@@ -48,5 +49,18 @@ namespace ApiPartyCatalog.Controllers
 
             return Ok(decorator);
         }
+
+        [Route("EditDecorator"), HttpPut]
+        public ActionResult EditDecorator(int idDecorator,  Decorator decorator)
+        {
+            if (idDecorator != decorator.DecoratorId)
+                return BadRequest("O ID do decorador está incorreto");
+
+            _context.Entry(decorator).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(decorator);
+        }
+
     }
 }
