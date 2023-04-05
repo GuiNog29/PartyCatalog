@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPartyCatalog.Models
 {
@@ -18,6 +19,8 @@ namespace ApiPartyCatalog.Models
         [MaxLength(300)]
         public string UrlImage { get; set; }
         public int DecoratorId { get; set; }
+
+        [JsonIgnore]
         public Decorator Decorator { get; set; }
     }
 }

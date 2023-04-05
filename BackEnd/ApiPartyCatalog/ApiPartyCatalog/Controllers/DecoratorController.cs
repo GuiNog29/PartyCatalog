@@ -27,6 +27,17 @@ namespace ApiPartyCatalog.Controllers
             return Ok(decorators);
         }
 
+        [Route("GetDecoratorWithDecorations"), HttpGet]
+        public ActionResult<IEnumerable<Decorator>> GetDecoratorWithDecorations()
+        {
+            var decorators = _context.Decorators.Include(d => d.Decorations).ToList();
+
+            if (decorators.Count == 0 || decorators == null)
+                return NotFound("Não foi encontrado nenhum decorador!");
+
+            return Ok(decorators);
+        }
+
         [Route("GetDecoratorByName"), HttpGet]
         public ActionResult<IEnumerable<Decorator>> GetDecoratorByName(string name)
         {
