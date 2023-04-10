@@ -1,6 +1,7 @@
 ﻿using ApiPartyCatalog.Context;
 using ApiPartyCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiPartyCatalog.Controllers
 {
@@ -15,15 +16,123 @@ namespace ApiPartyCatalog.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecorators() 
+        [Route("GetDecorators"), HttpGet]
+        public ActionResult<IEnumerable<Decorator>> GetDecorators()
         {
-            var decorators = _context.Decorators.ToList();
+            try
+            {
+                var decorators = _context.Decorators.ToList();
 
-            if(decorators is null)
-                return NotFound("Não foi encontrado nenhum decorador");
+                if (decorators.Count == 0 || decorators is null)
+                    return NotFound("Não foi encontrado nenhum decorador");
 
-            return decorators;
+                return Ok(decorators);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro ao realizar uma requisição no método GetDecorators");
+            }
+        }
+
+        [Route("GetDecoratorWithDecorations"), HttpGet]
+        public ActionResult<IEnumerable<Decorator>> GetDecoratorWithDecorations()
+        {
+            try
+            {
+                var decorators = _context.Decorators.Include(d => d.Decorations).ToList();
+
+                if (decorators.Count == 0 || decorators == null)
+                    return NotFound("Não foi encontrado nenhum decorador!");
+
+                return Ok(decorators);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                    "Ocorreu um erro ao realizar uma requisição no método GetDecoratorWithDecorations");
+            }
+        }
+
+        [Route("GetDecoratorByName"), HttpGet]
+        public ActionResult<IEnumerable<Decorator>> GetDecoratorByName(string name)
+        {
+            try
+            {
+                var decorator = _context.Decorators.Where(x => x.NameDecorator.Contains(name)).ToList();
+
+                if (decorator.Count == 0 || decorator == null)
+                    return NotFound("Não foi encontrado um decorador com o nome informado!");
+
+                return Ok(decorator);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro ao realizar uma requisição no método GetDecoratorByName");
+            }
+        }
+
+        [Route("AddingDecorator"), HttpPost]
+        public ActionResult AddingDecorator(Decorator decorator)
+        {
+            try
+            {
+                if (decorator is null)
+                    return BadRequest("Decorador está nulo!");
+
+                _context.Decorators.Add(decorator);
+                _context.SaveChanges();
+
+                return Ok(decorator);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro ao realizar uma requisição no método AddingDecorator");
+            }
+        }
+
+        [Route("EditDecorator"), HttpPut]
+        public ActionResult EditDecorator(int idDecorator, Decorator decorator)
+        {
+            try
+            {
+                if (idDecorator != decorator.DecoratorId)
+                    return BadRequest("O ID do decorador está incorreto!");
+
+                _context.Entry(decorator).State = EntityState.Modified;
+                _context.SaveChanges();
+
+                return Ok(decorator);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro ao realizar uma requisição no método EditDecorator");
+            }
+        }
+
+        [Route("DeleteDecorator"), HttpDelete]
+        public ActionResult DeleteDecorator(int idDecorator)
+        {
+            try
+            {
+                var decorator = _context.Decorators.FirstOrDefault(x => x.DecoratorId == idDecorator);
+
+                if (decorator is null)
+                    return BadRequest("Decorador não encontrado!");
+
+                _context.Decorators.Remove(decorator);
+                _context.SaveChanges();
+
+                return Ok(decorator);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro ao realizar uma requisição no método DeleteDecorator");
+            }
         }
     }
 }
