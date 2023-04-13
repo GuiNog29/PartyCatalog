@@ -17,11 +17,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetAllDecorations"), HttpGet]
-        public ActionResult<IEnumerable<Decoration>> GetAllDecorations()
+        public async Task<ActionResult<IEnumerable<Decoration>>> GetAllDecorations()
         {
             try
             {
-                var decorations = _context.Decorations.ToList();
+                var decorations = await _context.Decorations.ToListAsync();
 
                 if (decorations.Count == 0 || decorations is null)
                     return NotFound("Não foi encontrado nenhuma decoracao...");
@@ -37,11 +37,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetAllDecorationFromDecorator"), HttpGet]
-        public ActionResult<IEnumerable<Decoration>> GetAllDecorationFromDecorator(int idDecorator)
+        public async Task<ActionResult<IEnumerable<Decoration>>> GetAllDecorationFromDecorator(int idDecorator)
         {
             try
             {
-                var decorations = _context.Decorations.Where(x => x.DecoratorId == idDecorator).ToList();
+                var decorations = await _context.Decorations.Where(x => x.DecoratorId == idDecorator).ToListAsync();
 
                 if (decorations.Count == 0 || decorations is null)
                     return NotFound("Não foi encontrado nenhuma decoração deste decorador...");
@@ -57,12 +57,12 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetDecorationByTitle"), HttpGet]
-        public ActionResult<IEnumerable<Decoration>> GetDecorationByTitle(string nameDecoration, int idDecorator)
+        public async Task<ActionResult<IEnumerable<Decoration>>> GetDecorationByTitle(string nameDecoration, int idDecorator)
         {
             try
             {
-                var decorations = _context.Decorations.Where(x =>
-                x.Title.Contains(nameDecoration) && x.DecoratorId == idDecorator).ToList();
+                var decorations = await _context.Decorations.Where(x =>
+                x.Title.Contains(nameDecoration) && x.DecoratorId == idDecorator).ToListAsync();
 
                 if (decorations.Count == 0 || decorations is null)
                     return NotFound("Não foi encontrado nenhuma decoração com está descrição!");
@@ -78,14 +78,14 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("AddingDecoration"), HttpPost]
-        public ActionResult AddingDecoration(Decoration decoration)
+        public async Task<ActionResult<Decoration>> AddingDecoration(Decoration decoration)
         {
             try
             {
                 if (decoration is null)
                     return BadRequest("Decoração está nula!");
 
-                _context.Decorations.Add(decoration);
+                await _context.Decorations.AddAsync(decoration);
                 _context.SaveChanges();
 
                 return Ok(decoration);
@@ -99,7 +99,7 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("EditDecoration"), HttpPut]
-        public ActionResult EditDecoration(int idDecoration, Decoration decoration)
+        public async Task<ActionResult<Decoration>> EditDecoration(int idDecoration, Decoration decoration)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace ApiPartyCatalog.Controllers
                     return BadRequest("O ID da decoração está incorreto!");
 
                 _context.Entry(decoration).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(decoration);
             }
@@ -120,7 +120,7 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("DeleteDecoration"), HttpDelete]
-        public ActionResult DeleteDecoration(int idDecoration)
+        public async Task<ActionResult<Decoration>> DeleteDecoration(int idDecoration)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace ApiPartyCatalog.Controllers
                     return BadRequest("Decoração não localizada!");
 
                 _context.Decorations.Remove(decoration);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(decoration);
             }
