@@ -17,11 +17,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetDecorators"), HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecorators()
+        public async Task<ActionResult<IEnumerable<Decorator>>> GetDecorators()
         {
             try
             {
-                var decorators = _context.Decorators.ToList();
+                var decorators = await _context.Decorators.ToListAsync();
 
                 if (decorators.Count == 0 || decorators is null)
                     return NotFound("Não foi encontrado nenhum decorador");
@@ -36,11 +36,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetDecoratorWithDecorations"), HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecoratorWithDecorations()
+        public async Task<ActionResult<IEnumerable<Decorator>>> GetDecoratorWithDecorations()
         {
             try
             {
-                var decorators = _context.Decorators.Include(d => d.Decorations).ToList();
+                var decorators = await _context.Decorators.Include(d => d.Decorations).ToListAsync();
 
                 if (decorators.Count == 0 || decorators == null)
                     return NotFound("Não foi encontrado nenhum decorador!");
@@ -55,11 +55,11 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("GetDecoratorByName"), HttpGet]
-        public ActionResult<IEnumerable<Decorator>> GetDecoratorByName(string name)
+        public async Task<ActionResult<IEnumerable<Decorator>>> GetDecoratorByName(string name)
         {
             try
             {
-                var decorator = _context.Decorators.Where(x => x.NameDecorator.Contains(name)).ToList();
+                var decorator = await _context.Decorators.Where(x => x.NameDecorator.Contains(name)).ToListAsync();
 
                 if (decorator.Count == 0 || decorator == null)
                     return NotFound("Não foi encontrado um decorador com o nome informado!");
@@ -74,14 +74,14 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("AddingDecorator"), HttpPost]
-        public ActionResult AddingDecorator(Decorator decorator)
+        public async Task<ActionResult<Decorator>> AddingDecorator(Decorator decorator)
         {
             try
             {
                 if (decorator is null)
                     return BadRequest("Decorador está nulo!");
 
-                _context.Decorators.Add(decorator);
+                await _context.Decorators.AddAsync(decorator);
                 _context.SaveChanges();
 
                 return Ok(decorator);
@@ -94,7 +94,7 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("EditDecorator"), HttpPut]
-        public ActionResult EditDecorator(int idDecorator, Decorator decorator)
+        public async Task<ActionResult<Decorator>> EditDecorator(int idDecorator, Decorator decorator)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace ApiPartyCatalog.Controllers
                     return BadRequest("O ID do decorador está incorreto!");
 
                 _context.Entry(decorator).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(decorator);
             }
@@ -114,7 +114,7 @@ namespace ApiPartyCatalog.Controllers
         }
 
         [Route("DeleteDecorator"), HttpDelete]
-        public ActionResult DeleteDecorator(int idDecorator)
+        public async Task<ActionResult<Decorator>> DeleteDecorator(int idDecorator)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace ApiPartyCatalog.Controllers
                     return BadRequest("Decorador não encontrado!");
 
                 _context.Decorators.Remove(decorator);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(decorator);
             }
